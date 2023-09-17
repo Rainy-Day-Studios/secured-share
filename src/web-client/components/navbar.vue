@@ -8,6 +8,7 @@
       <a
         href="https://github.com/Rainy-Day-Studios/secured-share"
         target="_blank"
+        class="text-white"
       >
         <i class="pi pi-github text-4xl mr-2"></i>
       </a>

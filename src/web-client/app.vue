@@ -1,6 +1,8 @@
 <template>
   <div>
-    <NuxtLayout />
+    <NuxtLayout>
+      <NuxtPage />
+    </NuxtLayout>
   </div>
 </template>
 
@@ -8,9 +10,9 @@
 * {
   margin: 0;
   padding: 0;
-} 
+}
 
 body {
-  background-color: var(--surface-0)
+  background-color: var(--surface-0);
 }
 </style>
