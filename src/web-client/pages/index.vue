@@ -17,20 +17,50 @@
       </div>
       <NuxtLink class="text-sm" to="/share-secret">Advanced</NuxtLink>
     </div>
-    <div class="marketing-sections py-8 flex justify-content-center px-2">
-      <div
-        v-for="section in marketingSections"
-        :key="section.title"
-        class="flex w-26rem"
-      >
-        <div class="d-none">
-          <img src="@/assets/images/shield-check.svg" class="w-2rem" />
-        </div>
-        <div class="ml-4">
-          <h2 class="mb-2">{{ section.title }}</h2>
-          <p>{{ section.description }}</p>
-        </div>
-      </div>
+    <div
+      class="marketing-sections py-8 flex flex-column align-items-center px-2"
+    >
+      <MarketingSection>
+        <template v-slot:img>
+          <img src="@/assets/images/shield-check.svg" class="w-8rem" />
+        </template>
+        <template v-slot:title>
+          Can't remember your password? Neither can we.
+        </template>
+        <template v-slot:description>
+          <p>
+            We encrypt your password before it ever leaves your computer. If we
+            don't know what it is, neither can attackers.
+          </p>
+        </template>
+      </MarketingSection>
+      <MarketingSection>
+        <template v-slot:img>
+          <img src="@/assets/images/account.svg" class="w-8rem" />
+        </template>
+        <template v-slot:title> Control access to your secrets. </template>
+        <template v-slot:description>
+          <p class="mb-2">
+            Expire your sharing links after time passes, or after they have been
+            viewed.
+          </p>
+          <p>You control exactly how and when your passwords are viewed.</p>
+        </template>
+      </MarketingSection>
+      <MarketingSection>
+        <template v-slot:img>
+          <img src="@/assets/images/screen.svg" class="w-8rem" />
+        </template>
+        <template v-slot:title> Don't trust us? Read our code. </template>
+        <template v-slot:description>
+          <p class="mb-2">Our platform is 100% open source.</p>
+          <a
+            href="https://github.com/Rainy-Day-Studios/secured-share"
+            target="_blank"
+            ><p>Check out the code.</p></a
+          >
+        </template>
+      </MarketingSection>
     </div>
   </div>
 </template>
@@ -38,15 +68,7 @@
 <script setup lang="ts">
 import InputText from 'primevue/inputtext';
 import Button from 'primevue/button';
-
-const marketingSections = [
-  {
-    title: "Can't remember your password? Neither can we.",
-    description:
-      "We encrypt your password before it ever leaves your computer. If we don't know what it is, neither can attackers."
-    // img: require('@/assets/images/shield-check.svg')
-  }
-];
+import MarketingSection from '@/components/marketing-section.vue';
 </script>
 
 <style scoped>
