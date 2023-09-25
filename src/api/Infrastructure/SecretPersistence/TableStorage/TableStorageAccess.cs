@@ -78,6 +78,7 @@ public class TableStorageAccess : ISecretStore
             Name = secret.Name,
             EncryptedValue = secret.EncryptedValue,
             InternalIV = secret.InternalIV,
+            ClientIV = secret.ClientIV,
 
             Password = secret.Metadata.Password,
             Salt = secret.Metadata.Salt,
@@ -99,6 +100,7 @@ public class TableStorageAccess : ISecretStore
             Name = secret.Name,
             EncryptedValue = secret.EncryptedValue,
             InternalIV = secret.InternalIV,
+            ClientIV = secret.ClientIV,
             Metadata = new SecurityMetadata
             {
                 Password = secret.Password,

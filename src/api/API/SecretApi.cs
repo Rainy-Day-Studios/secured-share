@@ -49,6 +49,7 @@ public class SecretApi
             {
                 Name = createRequest.Name,
                 EncryptedValue = createRequest.EncryptedValue,
+                ClientIV = createRequest.ClientIV,
                 Metadata = new SecurityMetadata
                 {
                     Password = createRequest.Password,
@@ -153,7 +154,8 @@ public class SecretApi
                     Message = "Successfully retrieved secret.",
                     Model = new RetrieveSecretResponse
                     {
-                        EncryptedSecret = getResult.Model.EncryptedValue
+                        EncryptedSecret = getResult.Model.EncryptedValue,
+                        ClientIV = getResult.Model.ClientIV
                     }
                 });
             }

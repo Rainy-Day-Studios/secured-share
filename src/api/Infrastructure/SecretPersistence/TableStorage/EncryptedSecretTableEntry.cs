@@ -9,6 +9,7 @@ public class EncryptedSecretTableEntry : ITableEntity
 
     public string EncryptedValue { get; set; }
     public string InternalIV { get; set; }
+    public string ClientIV { get; set; }
 
     public string Password { get; set; }
     public string Salt { get; set; }
