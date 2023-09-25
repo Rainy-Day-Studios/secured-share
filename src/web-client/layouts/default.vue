@@ -1,7 +1,9 @@
 <template>
-  <Navbar></Navbar>
-  <slot />
-  <Footer></Footer>
+  <div>
+    <Navbar></Navbar>
+    <slot />
+    <Footer></Footer>
+  </div>
 </template>
 
 <script setup lang="ts">

@@ -12,8 +12,9 @@
           class="bg-white pw-input mr-2 md:w-18rem"
           placeholder="Password"
           type="password"
+          v-model="pwInput"
         ></InputText>
-        <Button> Share </Button>
+        <Button :loading="isSubmittingPw" type="button" @click="handleCreateSecret()"> Share </Button>
       </div>
       <NuxtLink class="text-sm" to="/share-secret">Advanced</NuxtLink>
     </div>
@@ -69,6 +70,41 @@
 import InputText from 'primevue/inputtext';
 import Button from 'primevue/button';
 import MarketingSection from '@/components/marketing-section.vue';
+import { createSecret } from '@/data-access/secrets/secret-data-access';
+import { encrypt } from '@/encryption/encryptor';
+
+const pwInput = ref(null);
+const isSubmittingPw = ref(false);
+
+async function handleCreateSecret() {
+  try {
+    if (pwInput.value) {
+      if (pwInput.value.length > 200) {
+        // TODO handle this
+        return;
+      }
+
+      isSubmittingPw.value = true;
+
+      const encryptionResult = await encrypt(pwInput.value);
+
+      const pwExpiration = new Date();
+      pwExpiration.setDate(new Date().getDate() + 7);
+
+      const reqModel = {
+        encryptedValue: encryptionResult.encryptedValue,
+        browserIV: encryptionResult.iv,
+        expiration: pwExpiration
+      } as CreateSecretRequestModel;
+
+      let result = await createSecret(reqModel);
+
+      console.log(result);
+    }
+  } finally {
+    isSubmittingPw.value = false;
+  }
+}
 </script>
 
 <style scoped>
