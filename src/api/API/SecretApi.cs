@@ -107,7 +107,8 @@ public class SecretApi
                     Message = "Successfully retrieved security metadata.",
                     Model = new SecurityMetadataResponse
                     {
-                        RequiresPassword = getResult.Model.RequiresPassword
+                        RequiresPassword = getResult.Model.RequiresPassword,
+                        Expiration = getResult.Model.Expiration
                     }
                 });
             }

@@ -34,7 +34,7 @@ public class TableStorageAccess : ISecretStore
 
     public async Task<SecuredSecret> CreateSecret(SecuredSecret newSecret)
     {
-        var rowKey = Guid.NewGuid().ToString()[..10].Replace("-", "");
+        var rowKey = Guid.NewGuid().ToString()[..11].Replace("-", "");
         newSecret.Id = rowKey;
 
         var tableEntity = MapToTableEntity(newSecret);
@@ -86,7 +86,7 @@ public class TableStorageAccess : ISecretStore
             MaxAccessCount = secret.Metadata.MaxAccessCount,
 
             RowKey = secret.Id,
-            PartitionKey = secret.Id[..2]
+            PartitionKey = secret.Id[..3]
         };
     }
 

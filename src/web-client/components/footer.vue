@@ -1,5 +1,5 @@
 <template>
-  <div class="p-3 flex align-items-center">
+  <div class="p-5 flex align-items-center max-width-24rem">
     <div class="col">
       <div>
         <div class="text-lg mb-2">&copy; Secured Share 2023</div>

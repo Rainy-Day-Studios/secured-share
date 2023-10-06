@@ -16,3 +16,36 @@ export async function createSecret(req: CreateSecretRequestModel) {
 
   return responseModel;
 }
+
+
+export async function getSecretMetadata(secretId: String): Promise<ApiResponse<SecurityMetadataResponse>> {
+  const config = useRuntimeConfig();
+  const getMetadataUrl = `${config.API_URL}/secret/${secretId}/metadata`;
+
+  let apiResponse = await fetch(getMetadataUrl, {
+    method: 'get',
+  });
+
+  let responseModel = await apiResponse.json();
+  responseModel.Model.Expiration = new Date(responseModel.Model.Expiration);
+
+  return responseModel;
+}
+
+export async function getSecret(secretId: String): Promise<ApiResponse<RetrieveSecretResponseModel>> {
+  const config = useRuntimeConfig();
+  const getSecretUrl = `${config.API_URL}/secret/${secretId}/retrieve`;
+
+  let apiResponse = await fetch(getSecretUrl, {
+    method: 'post',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({})
+  });
+
+  let responseModel = await apiResponse.json();
+
+  return responseModel;
+}
