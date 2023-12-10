@@ -4,7 +4,7 @@ using FluentValidation.Results;
 using UseCases.Validation;
 using Xunit;
 
-namespace Tests.UseCases.UnitTests.Validation;
+namespace Tests.UnitTests.UseCases.Validation;
 
 public class ValidationResultFormatterTests
 {

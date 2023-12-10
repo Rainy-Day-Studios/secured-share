@@ -13,7 +13,7 @@ using UseCases.SecretManagement;
 using UseCases.SecretManagement.DTO;
 using Xunit;
 
-namespace Tests.UseCases.UnitTests.SecretManagement;
+namespace Tests.UnitTests.UseCases.SecretManagement;
 
 public class GetSecretUseCaseTests
 {
@@ -42,6 +42,7 @@ public class GetSecretUseCaseTests
         var foundModel = new SecuredSecret
         {
             Id = secretId,
+            EncryptedValue = "abc",
             Metadata = new SecurityMetadata { Expiration = _utcNow.AddDays(7) }
         };
 
@@ -62,6 +63,25 @@ public class GetSecretUseCaseTests
         const string secretId = "secret-123";
 
         A.CallTo(() => _secretStore.GetSecret(secretId)).Returns(null);
+
+        // Act
+        var result = _useCase.GetSecretMetadata(secretId);
+
+        // Assert
+        result.Success.Should().BeFalse();
+        result.Reason.Should().Be(ResultReason.NotFound);
+    }
+
+    [Fact]
+    public void GetSecretMetadata_SecretFoundButExpired_ReturnsNotFound()
+    {
+        // Arrange 
+        const string secretId = "secret-123";
+
+        A.CallTo(() => _secretStore.GetSecret(secretId)).Returns(new SecuredSecret
+        {
+            Metadata = new SecurityMetadata { Expiration = _utcNow.AddMinutes(-1) }
+        });
 
         // Act
         var result = _useCase.GetSecretMetadata(secretId);
@@ -96,11 +116,32 @@ public class GetSecretUseCaseTests
     {
         // Arrange 
         const string secretId = "secret-123";
+        var foundSecret = GetValidSecret();
+        foundSecret.Metadata = new SecurityMetadata { Expiration = _utcNow.AddSeconds(-1) };
 
-        A.CallTo(() => _secretStore.GetSecret(secretId)).Returns(new SecuredSecret
+        A.CallTo(() => _secretStore.GetSecret(secretId)).Returns(foundSecret);
+
+        // Act
+        var result = await _useCase.GetSecret(new GetSecretRequest
         {
-            Metadata = new SecurityMetadata { Expiration = _utcNow.AddSeconds(-1) }
+            SecretId = secretId,
+            Password = "Password1!"
         });
+
+        // Assert
+        result.Success.Should().BeFalse();
+        result.Reason.Should().Be(ResultReason.NotFound);
+    }
+
+    [Fact]
+    public async Task GetSecret_SecretCleared_ReturnsNotFound()
+    {
+        // Arrange 
+        const string secretId = "secret-123";
+        var foundSecret = GetValidSecret();
+        foundSecret.EncryptedValue = "";
+
+        A.CallTo(() => _secretStore.GetSecret(secretId)).Returns(foundSecret);
 
         // Act
         var result = await _useCase.GetSecret(new GetSecretRequest

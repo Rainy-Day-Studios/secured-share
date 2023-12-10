@@ -6,6 +6,7 @@ namespace Infrastructure.SecretPersistence.TableStorage;
 public class EncryptedSecretTableEntry : ITableEntity
 {
     public string Name { get; set; }
+    public DateTime CreatedDate { get; set; }
 
     public string EncryptedValue { get; set; }
     public string InternalIV { get; set; }

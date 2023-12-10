@@ -16,16 +16,18 @@ public class SecretApi
 {
     private readonly ICreateSecretUseCase _createSecretUseCase;
     private readonly IGetSecretUseCase _getSecretUseCase;
-
+    private readonly IDeleteSecretUseCase _deleteSecretUseCase;
     private readonly ILogger _logger;
 
     public SecretApi(
         ICreateSecretUseCase createSecretUseCase,
         IGetSecretUseCase getSecretUseCase,
+        IDeleteSecretUseCase deleteSecretUseCase,
         ILoggerFactory loggerFac)
     {
         _createSecretUseCase = createSecretUseCase;
         _getSecretUseCase = getSecretUseCase;
+        _deleteSecretUseCase = deleteSecretUseCase;
 
         _logger = loggerFac.CreateLogger<SecretApi>();
     }
@@ -170,6 +172,42 @@ public class SecretApi
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error retrieving secret.");
+            await response.WriteAsJsonAsync(new ApiResponse<int> { Success = false, Message = "An unknown error occurred." });
+            response.StatusCode = HttpStatusCode.InternalServerError;
+
+            return response;
+        }
+    }
+
+    [Function("DeleteSecret")]
+    public async Task<HttpResponseData> DeleteSecret([HttpTrigger(AuthorizationLevel.Anonymous, "delete", Route = "secret/{secretId}")] HttpRequestData req,
+        string secretId)
+    {
+        var response = req.CreateResponse(HttpStatusCode.OK);
+        if (req.Method.ToLower() == "options") return response;
+
+        try
+        {
+            var deleteResult = await _deleteSecretUseCase.DeleteSecret(secretId);
+
+            if (deleteResult.Success)
+            {
+                await response.WriteAsJsonAsync(new ApiResponse<string>
+                {
+                    Success = true,
+                    Message = "Successfully deleted secret."
+                });
+            }
+            else
+            {
+                await ResultHandler.HandleFailedResult(deleteResult, response);
+            }
+
+            return response;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error deleting secret.");
             await response.WriteAsJsonAsync(new ApiResponse<int> { Success = false, Message = "An unknown error occurred." });
             response.StatusCode = HttpStatusCode.InternalServerError;
 

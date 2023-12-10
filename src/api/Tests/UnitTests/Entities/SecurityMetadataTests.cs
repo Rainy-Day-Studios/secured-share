@@ -3,7 +3,7 @@ using Entities;
 using FluentAssertions;
 using Xunit;
 
-namespace Tests.Entities.UnitTests;
+namespace Tests.UnitTests.Entities;
 
 public class SecurityMetadataTests
 {

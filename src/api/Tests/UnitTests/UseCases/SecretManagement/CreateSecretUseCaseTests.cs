@@ -7,12 +7,13 @@ using FluentAssertions;
 using FluentValidation;
 using FluentValidation.Results;
 using Microsoft.Extensions.Logging;
+using UseCases.Common;
 using UseCases.Result;
 using UseCases.SecretManagement;
 using UseCases.SecretManagement.CreateSecret;
 using Xunit;
 
-namespace Tests.UseCases.UnitTests.SecretManagement;
+namespace Tests.UnitTests.UseCases.SecretManagement;
 
 public class CreateSecretUseCaseTests
 {
@@ -21,11 +22,16 @@ public class CreateSecretUseCaseTests
     private readonly IValidator<SecuredSecret> _validator = A.Fake<IValidator<SecuredSecret>>();
     private readonly ILoggerFactory _loggerFac = A.Fake<ILoggerFactory>();
 
+    private readonly IDateTimeProvider _dtProvider = A.Fake<IDateTimeProvider>(o => o.Strict());
+    private readonly DateTime _uctNow = new(2022, 05, 21, 13, 0, 0);
+
     private readonly CreateSecretUseCase _useCase;
 
     public CreateSecretUseCaseTests()
     {
-        _useCase = new CreateSecretUseCase(_secretStore, _keyProvider, _validator, _loggerFac);
+        A.CallTo(() => _dtProvider.UtcNow).Returns(_uctNow);
+        
+        _useCase = new CreateSecretUseCase(_secretStore, _keyProvider, _validator, _dtProvider, _loggerFac);
     }
 
     [Fact]

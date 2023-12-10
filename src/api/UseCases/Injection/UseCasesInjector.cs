@@ -12,6 +12,7 @@ public static class UseCasesInjector
     {
         services.AddScoped<ICreateSecretUseCase, CreateSecretUseCase>();
         services.AddScoped<IGetSecretUseCase, GetSecretUseCase>();
+        services.AddScoped<IDeleteSecretUseCase, DeleteSecretUseCase>();
 
         services.AddScoped<IDateTimeProvider, DateTimeProvider>();
 

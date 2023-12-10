@@ -1,3 +1,4 @@
+using Azure;
 using Azure.Data.Tables;
 using Azure.Identity;
 using Entities;
@@ -64,6 +65,20 @@ public class TableStorageAccess : ISecretStore
         return accessEvent;
     }
 
+    public async Task UpdateSecret(SecuredSecret secret)
+    {
+        var tableSecret = _secretTableClient.Query<EncryptedSecretTableEntry>(e => e.RowKey == secret.Id, 1000).FirstOrDefault();
+        
+        tableSecret.Name = "[deleted]";
+        tableSecret.EncryptedValue = secret.EncryptedValue;
+        tableSecret.InternalIV = secret.InternalIV;
+        tableSecret.ClientIV = secret.ClientIV;
+        tableSecret.Password = secret.Metadata.Password;
+        tableSecret.Salt = secret.Metadata.Salt;
+
+        await _secretTableClient.UpdateEntityAsync(tableSecret, tableSecret.ETag);
+    }
+
     public List<AccessEvent> GetAccessHistory(string secretId)
     {
         var queryResults = _accessHistoryTableClient.Query<AccessEventTableEntry>(e => e.PartitionKey == secretId, 1000);
@@ -76,6 +91,7 @@ public class TableStorageAccess : ISecretStore
         return new EncryptedSecretTableEntry
         {
             Name = secret.Name,
+            CreatedDate = secret.CreatedDate,
             EncryptedValue = secret.EncryptedValue,
             InternalIV = secret.InternalIV,
             ClientIV = secret.ClientIV,
@@ -108,7 +124,7 @@ public class TableStorageAccess : ISecretStore
                 Expiration = secret.Expiration,
                 MaxAccessCount = secret.MaxAccessCount
             },
-            CreatedDate = secret.Timestamp.Value.DateTime
+            CreatedDate = secret.CreatedDate
         };
     }
 

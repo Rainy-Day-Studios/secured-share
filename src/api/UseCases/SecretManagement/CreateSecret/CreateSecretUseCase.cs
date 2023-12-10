@@ -1,6 +1,7 @@
 using Entities;
 using FluentValidation;
 using Microsoft.Extensions.Logging;
+using UseCases.Common;
 using UseCases.Result;
 using UseCases.Validation;
 
@@ -16,19 +17,21 @@ public class CreateSecretUseCase : ICreateSecretUseCase
     private readonly ISecretStore _secretStore;
     private readonly IKeyProvider _keyProvider;
     private readonly IValidator<SecuredSecret> _secretValidator;
-
+    private readonly IDateTimeProvider _dtProvider;
     private readonly ILogger _logger;
 
     public CreateSecretUseCase(
         ISecretStore secretStore,
         IKeyProvider keyProvider,
         IValidator<SecuredSecret> secretValidator,
+        IDateTimeProvider dtProvider,
         ILoggerFactory loggerFac)
     {
         _secretStore = secretStore;
         _keyProvider = keyProvider;
 
         _secretValidator = secretValidator;
+        _dtProvider = dtProvider;
         _logger = loggerFac.CreateLogger<CreateSecretUseCase>();
     }
 
@@ -49,6 +52,8 @@ public class CreateSecretUseCase : ICreateSecretUseCase
 
             newSecret.EncryptedValue = encryptionResult.Value;
             newSecret.InternalIV = encryptionResult.IV;
+            
+            newSecret.CreatedDate = _dtProvider.UtcNow;
 
             if (newSecret.Metadata.RequiresPassword)
             {

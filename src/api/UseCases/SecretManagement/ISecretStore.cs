@@ -9,4 +9,5 @@ public interface ISecretStore
     List<AccessEvent> GetAccessHistory(string secretId);
     
     Task<AccessEvent> CreateAccessEvent(AccessEvent accessEvent, SecuredSecret secret);
+    Task UpdateSecret(SecuredSecret secret);
 }

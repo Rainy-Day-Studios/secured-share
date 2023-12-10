@@ -13,7 +13,8 @@ public class CreateSecretValidator : AbstractValidator<SecuredSecret>
             .MaximumLength(1000);
 
         RuleFor(secret => secret.ClientIV)
-            .NotEmpty();
+            .NotEmpty()
+            .WithName(nameof(SecuredSecret.ClientIV));
 
         RuleFor(secret => secret.Metadata.Expiration)
             .GreaterThan(dtProvider.UtcNow)
