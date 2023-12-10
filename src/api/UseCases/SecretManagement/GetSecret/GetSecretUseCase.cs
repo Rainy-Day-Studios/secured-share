@@ -39,11 +39,13 @@ public class GetSecretUseCase : IGetSecretUseCase
         {
             var secret = _secretStore.GetSecret(secretId);
 
-            if (secret == null || secret.Metadata.IsExpired(_dtProvider.UtcNow))
+            if (secret == null ||
+                secret.Metadata.IsExpired(_dtProvider.UtcNow) ||
+                string.IsNullOrWhiteSpace(secret.EncryptedValue))
             {
                 return Result<SecurityMetadata>.Fail(
                     ResultReason.NotFound,
-                    "Secret not found. It either expired or you have an invalid link.");
+                    "Secret not found. It was either removed, expired, or you have an invalid link.");
             }
 
             return Result<SecurityMetadata>.Succeed(secret.Metadata);
@@ -62,11 +64,13 @@ public class GetSecretUseCase : IGetSecretUseCase
         {
             var secret = _secretStore.GetSecret(secretRequest.SecretId);
 
-            if (secret == null || secret.Metadata.IsExpired(_dtProvider.UtcNow))
+            if (secret == null ||
+                secret.Metadata.IsExpired(_dtProvider.UtcNow) ||
+                string.IsNullOrWhiteSpace(secret.EncryptedValue))
             {
                 return Result<SecuredSecret>.Fail(
                     ResultReason.NotFound,
-                    "Secret not found. It either expired or you have an invalid link.");
+                    "Secret not found. It was either removed, expired, or you have an invalid link.");
             }
 
             if (secret.Metadata.RequiresPassword)
@@ -76,7 +80,7 @@ public class GetSecretUseCase : IGetSecretUseCase
                 {
                     return Result<SecuredSecret>.Fail(
                         ResultReason.InvalidRequest,
-                        "Invalid password."); 
+                        "Invalid password.");
                 }
             }
 

@@ -2,7 +2,7 @@ using FluentAssertions;
 using UseCases;
 using Xunit;
 
-namespace Tests.UseCases.UnitTests;
+namespace Tests.UnitTests.UseCases;
 
 public class EncryptorTests
 {

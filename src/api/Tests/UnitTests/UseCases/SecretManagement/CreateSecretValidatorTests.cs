@@ -8,7 +8,7 @@ using UseCases.SecretManagement;
 using UseCases.SecretManagement.DTO;
 using Xunit;
 
-namespace Tests.UseCases.UnitTests.SecretManagement;
+namespace Tests.UnitTests.UseCases.SecretManagement;
 
 public class CreateSecretValidatorTests
 {
@@ -29,6 +29,7 @@ public class CreateSecretValidatorTests
         var model = new SecuredSecret
         {
             EncryptedValue = "abc",
+            ClientIV = "123",
             Metadata = new SecurityMetadata
             {
                 Expiration = _utcNow.AddDays(7),
@@ -52,6 +53,7 @@ public class CreateSecretValidatorTests
         var model = new SecuredSecret
         {
             EncryptedValue = "abc",
+            ClientIV = "123",
             Metadata = new SecurityMetadata
             {
                 Expiration = _utcNow.AddDays(7),
@@ -70,7 +72,7 @@ public class CreateSecretValidatorTests
     [InlineData("")]
     [InlineData("  ")]
     [InlineData(null)]
-    public void Validate_outSecret_ReturnsInvalid(string secretVal)
+    public void Validate_EmptySecret_ReturnsInvalid(string secretVal)
     {
         // Arrange
         var validator = new CreateSecretValidator(_dtProvider);
@@ -78,6 +80,7 @@ public class CreateSecretValidatorTests
         var model = new SecuredSecret
         {
             EncryptedValue = secretVal,
+            ClientIV = "123",
             Metadata = new SecurityMetadata
             {
                 Expiration = _utcNow.AddDays(7),
@@ -102,6 +105,7 @@ public class CreateSecretValidatorTests
         var model = new SecuredSecret
         {
             EncryptedValue = "abc",
+            ClientIV = "123",
             Metadata = new SecurityMetadata
             {
                 Expiration = _utcNow.AddDays(-7),
@@ -126,6 +130,7 @@ public class CreateSecretValidatorTests
         var model = new SecuredSecret
         {
             EncryptedValue = "abc",
+            ClientIV = "123",
             Metadata = new SecurityMetadata
             {
                 Expiration = _utcNow,
@@ -150,6 +155,7 @@ public class CreateSecretValidatorTests
         var model = new SecuredSecret
         {
             EncryptedValue = "abc",
+            ClientIV = "123",
             Metadata = new SecurityMetadata
             {
                 Expiration = _utcNow.AddDays(7),
@@ -163,5 +169,32 @@ public class CreateSecretValidatorTests
         // Assert
         result.IsValid.Should().BeFalse();
         result.Errors.Single().PropertyName.Should().Be(nameof(SecuredSecret.Metadata) + "." + nameof(SecuredSecret.Metadata.MaxAccessCount));
+    }
+
+    [Theory]
+    [InlineData("")]
+    [InlineData("  ")]
+    [InlineData(null)]
+    public void Validate_NoClientIV_ReturnsInvalid(string clientIV)
+    {
+        // Arrange
+        var validator = new CreateSecretValidator(_dtProvider);
+
+        var model = new SecuredSecret
+        {
+            EncryptedValue = "abc",
+            ClientIV = clientIV,
+            Metadata = new SecurityMetadata
+            {
+                Expiration = _utcNow.AddDays(7)
+            }
+        };
+
+        // Act
+        var result = validator.Validate(model);
+
+        // Assert
+        result.IsValid.Should().BeFalse();
+        result.Errors.Single().PropertyName.Should().Be(nameof(SecuredSecret.ClientIV));
     }
 }

@@ -7,6 +7,7 @@ public class SecuredSecret
 
     public string EncryptedValue { get; set; }
     public string InternalIV { get; set; }
+    public string ClientIV { get; set; }
 
     public SecurityMetadata Metadata { get; set; }
     public List<AccessEvent> AccessHistory { get; set; } = new List<AccessEvent>();
