@@ -5,7 +5,6 @@ export async function decryptValue(
 ): Promise<string> {
     const encryptedValue = Uint8Array.from(atob(encryptedValueBase64), c => c.charCodeAt(0));
     const iv = Uint8Array.from(atob(ivBase64), c => c.charCodeAt(0));
-    console.log(secretKeyBase64);
     const secretKey = Uint8Array.from(atob(secretKeyBase64), c => c.charCodeAt(0));
 
 

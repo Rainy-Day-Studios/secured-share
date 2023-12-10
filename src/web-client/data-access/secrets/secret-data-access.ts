@@ -26,8 +26,11 @@ export async function getSecretMetadata(secretId: String): Promise<ApiResponse<S
     method: 'get',
   });
 
+  
   let responseModel = await apiResponse.json();
-  responseModel.Model.Expiration = new Date(responseModel.Model.Expiration);
+  if (responseModel.Model.Expiration) {
+    responseModel.Model.Expiration = new Date(responseModel.Model.Expiration);
+  }
 
   return responseModel;
 }
@@ -43,6 +46,19 @@ export async function getSecret(secretId: String): Promise<ApiResponse<RetrieveS
       'Content-Type': 'application/json'
     },
     body: JSON.stringify({})
+  });
+
+  let responseModel = await apiResponse.json();
+
+  return responseModel;
+}
+
+export async function deleteSecret(secretId: String): Promise<ApiResponse<string>> {
+  const config = useRuntimeConfig();
+  const deleteSecretUrl = `${config.API_URL}/secret/${secretId}`;
+
+  let apiResponse = await fetch(deleteSecretUrl, {
+    method: 'delete'
   });
 
   let responseModel = await apiResponse.json();

@@ -1,3 +1,5 @@
 interface ApiResponse<T> {
-    Model: T
+    Model: T,
+    Message: string,
+    Success: boolean
 }

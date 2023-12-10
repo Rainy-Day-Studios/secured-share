@@ -56,7 +56,7 @@
         </MarketingSection>
       </div>
     </div>
-    <SecretCreatedModal :url="secretUrl" :is-visible="showSecretModal"></SecretCreatedModal>
+    <SecretCreatedModal :url="secretUrl" :is-visible="showSecretModal" @hide="pwInput = ''"></SecretCreatedModal>
   </div>
 </template>
 
@@ -115,5 +115,9 @@ async function handleCreateSecret() {
 
 .marketing-sections {
   background-color: var(--surface-overlay);
+}
+
+h2 {
+  text-wrap: balance;
 }
 </style>

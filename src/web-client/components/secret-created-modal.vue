@@ -1,5 +1,5 @@
 <template>
-    <Dialog v-model:visible="isVisible" modal :closable="true" :draggable="false" :closeOnEscape="true">
+    <Dialog v-model:visible="isVisible" modal :closable="true" :draggable="false" :closeOnEscape="true" v-bind="$attrs">
         <div class="flex justify-content-center align-items-center mb-5">
             <i class="pi pi-lock mr-3 text-2xl"></i>
             <div class="font-semibold text-2xl">Secret Created!</div>
